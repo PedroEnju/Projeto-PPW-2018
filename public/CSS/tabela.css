@@ -1,0 +1,11 @@
+#tabela_head {
+    text-align: center;
+    font-family: tahoma;
+    font-size: 25px;
+}
+#tabela_title {
+    text-align: center;
+    font-family: tahoma;
+    font-size: 25px;
+    background-color: #04ACEC;
+}

@@ -1,76 +1,101 @@
 <?php
+session_start();
+
+if (!$_SESSION["usuario"]) {
+    ?><script>window.location.replace('logout.php');</script><?php
+}
+
 include('../config/config.dba.php');
 
-$conexao = mysql_pconnect($host, $user, $pass);
-mysql_select_db($base, $conexao);
 
-$sql = "select * from usuario";
-$sql_query = mysql_query($sql, $conexao); //Faz o select no banco
-$sql_max = mysql_num_rows($sql_query); //Retorna a quantidade de linhas no banco
 
-if ($sql_max != 0) {
+
+$conn = new mysqli($host, $user, $pass, $base);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+$sql = "select * from usuario where status = 'A' order by id_usuario";
+$result = mysqli_query($conn, $sql);
+
+if (mysqli_num_rows($result) != 0) {
     ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <table border="0" align="center" cellpadding="0" cellspacing="0" width="600">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> Relatório de Usuário </title>
+    <link href="../../public/CSS/logo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <?php 
+        include ("header.inc.php");
+    ?>
+    
+    <table cellpadding="0" cellspacing="0" border="0" align="center" width="500" style="margin-top: 5%">
         <tr>
-            <td width="100">
-        <center><img src="../../public/img/LOGO.png" alt="LOGO"></center>
-    </td>
-    <td align="top" width="500">
-        <table height="76" cellpadding="0" cellspacing="0" border="0" align="center">
-            <tr>
-                <td height="46"><i><u><center><font size="2" face="verdana"><?php echo "RELATÓRIO DE USUÁRIOS"; ?></font></center></u></i></td>
-            </tr>
-            <tr>
-                <td height="30" align="bottom">
-                    <table cellpadding="0" cellspacing="0" border="0">
-                        <tr>
-                            <td align="right" width="250">
-                                <font size="-2" face="verdana">
-                                <?php
-                                $data = date("d/m/Y");
-                                $hora = date("H") - 3;
-                                $minseg = date("i:s");
-                                echo "Acessado em: $data ás $hora:$minseg";
-                                ?>
-                                </font>
-                            </td>
-                        </tr>
-                    </table>
+            <td rowspan="2">
+                <img src="../../public/img/LOGO.png" alt="LOGO" width="200">
+            </td>
+            <td height="46">
+                <i><u><center><font size="2" face="verdana"><?php echo "RELATÓRIO DE USUÁRIOS"; ?></font></center></u></i>
+                <p>
+                    <font size="-2" face="verdana">
+                    <?php
+                    date_default_timezone_set("America/Sao_Paulo");
+                    $data = date("d/m/Y");
+                    $hora = date("H:i:s");
+                    echo "Acessado em: $data ás $hora";
+                    ?>
+                    </font>
+                </p>
+            </td>
+        </tr>
+    </table>
+    <table border="0" align="center" cellpadding="4" cellspacing="4" width="800" align="center">
+        <tr>
+            <th width="100" align="center">Código</th>
+            <th width="500">Nome</th>
+            <th width="200">CPF</th>
+            <th width="100">Status</th>
+        </tr>
+        <?php
+        $row = 0;
+        $x = 0;
+        while ($row = $result->fetch_assoc()) {
+            $x++;
+            ?>
+            <tr
+            <?php
+            if ($x % 2 == 0) {
+                echo " bgcolor=#EAEAEA";
+            }
+            ?>
+                >
+                <td align="right">
+                    <font size="-1" face="arial">
+                    <?php echo ($row["id_usuario"]); ?>
+                    </font>
+                </td>
+                <td>
+                    <font size="-1" face="arial">
+                    <?php echo ($row["nome_usuario"]); ?>
+                    </font>
+                </td>
+                <td>
+                    <font size="-1" face="arial">
+                    <?php echo ($row["cpf_usuario"]); ?>
+                    </font>
+                </td>
+                <td align="center">
+                    <font size="-1" face="arial">
+                    <?php echo ($row["status"]); ?>
+                    </font>
                 </td>
             </tr>
-        </table>
-    </td>
-    </tr>
-    </table>
-    <table border="0" align="center" cellpadding="0" cellspacing="0" width="800" align="center">
-        <tr>
-            <td width="100"><font size="-2" face="verdana">Código</font></td>
-            <td width="500"><font size="-2" face="verdana"><center>Nome</center></font></TD>
-    <td width="200"><font size="-2" face="verdana">CPF</font></td>
-    <td width="100"><font size="-2" face="verdana"><center>Status</center></font></TD>
-    </tr>
-    <tr>
-        <td colspan="2"><hr size="1" noshade></td>
-    </tr>
-
-    <?php
-    for ($x = 0; $x < $sql_max; $x++) {
-        ?>
-        <tr
-        <?php
-        if ($x % 2 == 0) {
-            echo " bgcolor=#EAEAEA";
+            <?php
         }
         ?>
-            >
-            <td><font size="-1" face="arial"><?php echo mysql_result($sql_query, $x, 'id_usuario'); ?></font></td>
-            <td><font size="-1" face="arial"><?php echo mysql_result($sql_query, $x, 'nome_usuario'); ?></font></td>
-            <td><font size="-1" face="arial"><?php echo mysql_result($sql_query, $x, 'cpf_usuario'); ?></font></td>
-            <td><font size="-1" face="arial"><?php echo mysql_result($sql_query, $x, 'status'); ?></font></td>
-        </tr>
-        <tr><td colspan="2"><hr size="1" noshade></td></tr>
-        <?php
-    }
+    </table>
+    <?php
 }
+mysqli_close($conn);
 ?>
