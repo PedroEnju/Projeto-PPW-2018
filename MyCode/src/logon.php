@@ -19,12 +19,18 @@ $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) === 1) {
 
     $row = $result->fetch_assoc();
-    $_SESSION["usuario"] = $row["nome_usuario"];
+    $_SESSION["usuario"] = strtoupper($row["nome_usuario"]);
     $_SESSION["logado"] = true;
     $_SESSION["id"] = $row["_usuario"];
-    
     ?>
         <script> window.location = "../../public/index.php"; </script>
+    <?php
+} else {
+    ?>
+        <script> 
+            alert("Login incorreto!!!");
+            window.location = "login.php"; 
+        </script>
     <?php
 }
 mysqli_close($conn);

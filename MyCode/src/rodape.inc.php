@@ -8,8 +8,8 @@
             $hora = date("H:i:s");
             echo "Acesso em: $data ás $hora";
             ?>
+        Pedro Enju &copy; 2018
         </p>
-        <p>E. T. P. &copy 2018</p>
     </center>
     <hr>
 </div>
