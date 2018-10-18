@@ -1,18 +1,32 @@
-
-function verificaLogin() {
-
-    if (document.login.usuario.value === "") {
-        alert('Usuário em branco ou incorreto!!!\r\nPor favor digite novamente.');
-        document.login.usuario.focus();
-        return (false);
-        die();
-    }
-
-    if (document.login.senha.value === "") {
-        alert('Senha em branco ou incorreto!!!\r\nPor favor digite novamente.');
-        document.login.senha.focus();
-        window.history.go(-1);
-        return (false);
-    }
-    return (true);
-}
+$(document).ready(function () {
+    $(".entrar").on('click', function () {
+        if ($("#usuario").val() === '') {
+            $(".alert").addClass("show");
+            $("#campo").text("USUÁRIO");
+            $("#usuario").addClass("border-danger");
+            $("#usuario").focus();
+            return false;
+        }
+        if ($("#senha").val() === '') {
+            $(".alert").addClass("show");
+            $("#campo").text("SENHA");
+            $("#senha").addClass("border-danger");
+            $("#senha").focus();
+            return false;
+        }
+        $(".alert").removeClass("show");
+        $("#login").submit();
+    });
+    $("#usuario").on('change', function () {
+        $("#usuario").removeClass("border-danger");
+    });
+    $("#senha").on('change', function () {
+        $("#senha").removeClass("border-danger");
+    });
+    $(".cadastrar").on('click', function () {
+        window.location.href = 'CadastroUsuario.php';
+    });
+    $(".alertClose").on('click', function () {
+        $(".alert").removeClass("show");
+    });
+});

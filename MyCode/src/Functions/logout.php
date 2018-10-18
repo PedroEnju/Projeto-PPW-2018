@@ -5,5 +5,5 @@ session_unset();
 session_destroy();
 ?>
 <script>
-    window.location.replace("login.php");
+    window.location.replace("../Telas/ViewLogin.php");
 </script>
